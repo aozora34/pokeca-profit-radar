@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ポケカ利益レーダー</title>
+<style>
+body{font-family:sans-serif;background:#f2f5fa;margin:0;padding:18px;color:#222}
+h1{color:#2458a6;font-size:25px}
+.card{background:white;padding:16px;border-radius:14px;margin:14px 0;box-shadow:0 2px 8px #ddd}
+input{width:100%;box-sizing:border-box;padding:12px;margin:7px 0;border:1px solid #ccc;border-radius:8px;font-size:16px}
+button{background:#2458a6;color:white;border:0;padding:12px;border-radius:8px;font-size:16px;width:100%;margin-top:8px}
+.result{font-size:23px;font-weight:bold;color:#16834a}
+a{color:#2458a6}
+</style>
+</head>
+<body>
+<h1>⚡ ポケカ利益レーダー</h1>
+<p>ポケモンカードの仕入れ候補と利益をチェック！</p>
+
+<div class="card">
+<h2>💰 利益計算</h2>
+<label>仕入れ価格（円）</label>
+<input id="buy" type="number" placeholder="例：1000">
+<label>販売予定価格（円）</label>
+<input id="sell" type="number" placeholder="例：1800">
+<label>販売手数料（%）</label>
+<input id="fee" type="number" value="10">
+<label>送料（円）</label>
+<input id="ship" type="number" value="180">
+<button onclick="calc()">利益を計算する</button>
+<p>予想利益</p>
+<div id="result" class="result">0円</div>
+<p id="margin"></p>
+</div>
+
+<div class="card">
+<h2>🔎 カードを探す</h2>
+<input id="name" placeholder="例：ゴースト マスターボールミラー">
+<button onclick="searchCard()">メルカリで探す</button>
+<button onclick="searchYahoo()">Yahoo!オークションで探す</button>
+<button onclick="searchPrice()">カードラッシュの価格を調べる</button>
+</div>
+
+<div class="card">
+<h2>📌 仕入れのチェック</h2>
+<p>□ 販売済み価格を確認</p>
+<p>□ 手数料と送料を計算</p>
+<p>□ カードの傷・状態を確認</p>
+<p>□ 利益が残るか確認</p>
+</div>
+
+<script>
+function calc(){
+const buy=Number(document.getElementById('buy').value)||0;
+const sell=Number(document.getElementById('sell').value)||0;
+const fee=Number(document.getElementById('fee').value)||0;
+const ship=Number(document.getElementById('ship').value)||0;
+const profit=Math.floor(sell-sell*fee/100-ship-buy);
+document.getElementById('result').textContent=profit.toLocaleString()+'円';
+document.getElementById('margin').textContent='販売価格に対する利益率：'+(sell>0?(profit/sell*100).toFixed(1):0)+'%';
+}
+function searchCard(){
+const n=document.getElementById('name').value.trim();
+if(!n){alert('カード名を入力してね');return;}
+window.open('https://jp.mercari.com/search?keyword='+encodeURIComponent(n),'_blank');
+}
+function searchYahoo(){
+const n=document.getElementById('name').value.trim();
+if(!n){alert('カード名を入力してね');return;}
+window.open('https://auctions.yahoo.co.jp/search/search?p='+encodeURIComponent(n),'_blank');
+}
+function searchPrice(){
+const n=document.getElementById('name').value.trim();
+if(!n){alert('カード名を入力してね');return;}
+window.open('https://www.google.com/search?q='+encodeURIComponent(n+' カードラッシュ 販売価格'),'_blank');
+}
+</script>
+</body>
+</html>
