@@ -77,5 +77,48 @@ if(!n){alert('カード名を入力してね');return;}
 window.open('https://www.google.com/search?q='+encodeURIComponent(n+' カードラッシュ 販売価格'),'_blank');
 }
 </script>
-</body>
+
+
+
+<section style="background:white;padding:16px;margin:16px 0;border-radius:12px;border:1px solid #ddd;">
+
+  <h2>ポケカ利益計算</h2>
+
+  <label>販売価格（円）</label>
+
+  <input id="sellPrice" type="number" placeholder="例：3000" style="display:block;width:90%;padding:10px;margin:8px 0 16px;">
+
+  <label>仕入れ価格（円）</label>
+
+  <input id="buyPrice" type="number" placeholder="例：2000" style="display:block;width:90%;padding:10px;margin:8px 0 16px;">
+
+  <label>販売手数料（％）</label>
+
+  <input id="feeRate" type="number" value="10" style="display:block;width:90%;padding:10px;margin:8px 0 16px;">
+
+  <button onclick="calculateProfit()" style="padding:12px 20px;background:#2458a6;color:white;border:0;border-radius:8px;">利益を計算</button>
+
+  <p id="profitResult">ここに利益が表示されます</p>
+
+</section>
+
+<script>
+
+function calculateProfit() {
+
+  const sell = Number(document.getElementById('sellPrice').value);
+
+  const buy = Number(document.getElementById('buyPrice').value);
+
+  const fee = Number(document.getElementById('feeRate').value);
+
+  const profit = sell - buy - sell * fee / 100;
+
+  document.getElementById('profitResult').textContent =
+
+    '手数料：' + Math.round(sell * fee / 100) + '円 ／ 利益：' + Math.round(profit) + '円';
+
+}
+
+</script></body>
 </html>
