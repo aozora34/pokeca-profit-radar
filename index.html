@@ -120,6 +120,74 @@ function calculateProfit() {
 
 }
 
+
+
+const radar = document.createElement('section');
+
+radar.innerHTML = `
+
+  <hr>
+
+  <h2>ポケカ利益レーダー</h2>
+
+  <p>カード名</p>
+
+  <input id="radarName" placeholder="例：リザードン">
+
+  <p>国内相場（売却予定価格・円）</p>
+
+  <input id="radarMarket" type="number" placeholder="例：5000">
+
+  <p>メルカリ仕入れ価格（円）</p>
+
+  <input id="radarBuy" type="number" placeholder="例：3000">
+
+  <p>送料（円）</p>
+
+  <input id="radarShip" type="number" value="180">
+
+  <p>販売手数料（%）</p>
+
+  <input id="radarFee" type="number" value="10">
+
+  <p>
+
+    <button id="radarCalc">予想利益を計算</button>
+
+  </p>
+
+  <h3 id="radarResult">価格を入力してください</h3>
+
+`;
+
+document.body.appendChild(radar);
+
+document.getElementById('radarCalc').onclick = function() {
+
+  const market = Number(document.getElementById('radarMarket').value);
+
+  const buy = Number(document.getElementById('radarBuy').value);
+
+  const ship = Number(document.getElementById('radarShip').value || 0);
+
+  const fee = Number(document.getElementById('radarFee').value || 0);
+
+  const result = document.getElementById('radarResult');
+
+  if (market <= 0 || buy <= 0) {
+
+    result.textContent = '国内相場と仕入れ価格を入力してください';
+
+    return;
+
+  }
+
+  const profit = market - Math.round(market * fee / 100) - ship - buy;
+
+  result.textContent = '予想利益：' + profit.toLocaleString('ja-JP') + '円';
+
+};
 </script></body>
+
 
 </html>
