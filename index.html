@@ -205,8 +205,86 @@ document.getElementById('radarCalc').onclick = function() {
 
 </section>
 
-<script src="./card-search.js"></script>
-</body>
 
+
+<script>
+
+async function searchPokemonCards(name) {
+
+  const result = document.getElementById("cardSearchResults");
+
+  if (!result) {
+
+    alert("検索結果の表示欄が見つかりません");
+
+    return;
+
+  }
+
+  name = (name || "").trim();
+
+  if (!name) {
+
+    result.textContent = "カード名を入力してください";
+
+    return;
+
+  }
+
+  result.textContent = "検索中...";
+
+  try {
+
+    const response = await fetch(
+
+      "https://api.tcgdex.net/v2/ja/cards?name=" +
+
+      encodeURIComponent(name)
+
+    );
+
+    if (!response.ok) {
+
+      throw new Error("API error");
+
+    }
+
+    const cards = await response.json();
+
+    result.replaceChildren();
+
+    if (!Array.isArray(cards) || cards.length === 0) {
+
+      result.textContent = "カードが見つかりませんでした";
+
+      return;
+
+    }
+
+    cards.slice(0, 20).forEach(card => {
+
+      const item = document.createElement("p");
+
+      item.textContent =
+
+        card.name + "（カード番号：" + card.localId + "）";
+
+      result.appendChild(item);
+
+    });
+
+  } catch (error) {
+
+    result.textContent =
+
+      "カード情報を取得できませんでした。時間をおいて再試行してください。";
+
+  }
+
+}
+
+</script>
+
+</body>
 
 </html>
