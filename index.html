@@ -243,6 +243,63 @@ async function loadCardPrices() {
 
 </script>
 
+
+<script>
+
+function calculateCardProfit() {
+
+  const buyInput = document.getElementById("buyPrice");
+
+  const sellInput = document.getElementById("sellPrice");
+
+  const result = document.getElementById("profitResult");
+
+  const buy = Number(buyInput.value);
+
+  const sell = Number(sellInput.value);
+
+  if (!buy || !sell || buy < 0 || sell < 0) {
+
+    result.textContent = "仕入れ価格と売却価格を入力してください";
+
+    return;
+
+  }
+
+  const fee = Math.floor(sell * 0.10);
+
+  const shipping = 230;
+
+  const profit = sell - buy - fee - shipping;
+
+  result.textContent =
+
+    "予想利益：" + profit.toLocaleString() + "円" +
+
+    (profit >= 2000 ? " 🎯 利益2,000円以上！" : "（利益2,000円未満）");
+
+}
+
+</script>
+  
+
+<section style="border:1px solid #ddd;border-radius:10px;padding:16px;margin:16px 0">
+
+  <h3>利益2,000円チェック</h3>
+
+  <label>仕入れ価格（円）</label>
+
+  <input id="buyPrice" type="number" min="0" placeholder="例：5000" style="display:block;width:100%;padding:10px;margin:8px 0 12px">
+
+  <label>売却価格（円）</label>
+
+  <input id="sellPrice" type="number" min="0" placeholder="例：8000" style="display:block;width:100%;padding:10px;margin:8px 0 12px">
+
+  <button type="button" onclick="calculateCardProfit()" style="padding:10px 16px">利益を計算</button>
+
+  <p id="profitResult">価格を入力して計算してください</p>
+
+</section>
     <script src="./card-search.js"></script></body>
 
 </html>
