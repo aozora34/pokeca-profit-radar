@@ -1,5 +1,3 @@
-
-
 async function searchPokemonCards(name) {
 
   const result = document.getElementById("cardSearchResults");
@@ -71,3 +69,5 @@ async function searchPokemonCards(name) {
   }
 
 }
+
+
