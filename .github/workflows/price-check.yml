@@ -1,0 +1,29 @@
+name: Pokemon Card Price Check
+
+on:
+
+  workflow_dispatch:
+
+  schedule:
+
+    - cron: "0 0,6,12 * * *"
+
+permissions:
+
+  contents: read
+
+jobs:
+
+  price-check:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+
+        uses: actions/checkout@v4
+
+      - name: Check workflow
+
+        run: echo "Pokemon Card Price Check is running"
