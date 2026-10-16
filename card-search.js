@@ -31,6 +31,47 @@ async function searchPokemonCards(name) {
     if (!response.ok) throw new Error("検索エラー");
 
     const cards = await response.json();
+    
+
+    let priceCards = [];
+
+    try {
+
+      const priceResponse = await fetch(
+
+        "https://tokyocardreport.com/data/prices.json",
+
+        { cache: "no-store" }
+
+      );
+
+      if (priceResponse.ok) {
+
+        const priceData = await priceResponse.json();
+
+        priceCards = (priceData.sets || []).flatMap(set =>
+
+          (set.cards || []).map(priceCard => ({
+
+            ...priceCard,
+
+            currentSell: [...(priceCard.sell || [])]
+
+              .reverse()
+
+              .find(price => price !== null && price !== undefined)
+
+          }))
+
+        );
+
+      }
+
+    } catch (priceError) {
+
+      console.log("価格データを取得できませんでした", priceError);
+
+    }
 
     result.replaceChildren();
 
@@ -66,6 +107,44 @@ async function searchPokemonCards(name) {
 
       const query = card.name + " " + card.localId;
 
+
+      const priceInfo = priceCards.find(
+
+        priceCard => priceCard.name === card.name
+
+      );
+
+      const priceText = document.createElement("p");
+
+      if (priceInfo) {
+
+        priceText.textContent =
+
+          "ショップ販売価格：約" +
+
+          (priceInfo.currentSell != null
+
+            ? priceInfo.currentSell.toLocaleString() + "円"
+
+            : "不明") +
+
+          " ／ 買取価格：約" +
+
+          (priceInfo.buyback != null
+
+            ? priceInfo.buyback.toLocaleString() + "円"
+
+            : "不明");
+
+      } else {
+
+        priceText.textContent =
+
+          "価格データなし（カード名が一致しない場合があります）";
+
+      }
+
+      item.appendChild(priceText);
       const links = [
 
         {
