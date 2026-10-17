@@ -90,7 +90,7 @@ window.open('https://www.google.com/search?q='+encodeURIComponent(n+' カード�
 
   <label>仕入れ価格（円）</label>
 
-  <input id="buyPrice" type="number" placeholder="例：2000" style="display:block;width:90%;padding:10px;margin:8px 0 16px;">
+  <input id="buyPrice2000" type="number" placeholder="例：2000" style="display:block;width:90%;padding:10px;margin:8px 0 16px;">
 
   <label>販売手数料（％）</label>
 
@@ -256,9 +256,9 @@ async function loadCardPrices() {
 
 function calculateCardProfit() {
 
-  const buyInput = document.getElementById("buyPrice");
+  const buyInput = document.getElementById("buyPrice2000");
 
-  const sellInput = document.getElementById("sellPrice");
+  const sellInput = document.getElementById("sellPrice2000");
 
   const result = document.getElementById("profitResult2000");
 
@@ -301,7 +301,7 @@ function calculateCardProfit() {
 
   <label>売却価格（円）</label>
 
-  <input id="sellPrice" type="number" min="0" placeholder="例：8000" style="display:block;width:100%;padding:10px;margin:8px 0 12px">
+  <input id="sellPrice2000" type="number" min="0" placeholder="例：8000" style="display:block;width:100%;padding:10px;margin:8px 0 12px">
 
   <button type="button" onclick="calculateCardProfit()" style="padding:10px 16px">利益を計算</button>
 
