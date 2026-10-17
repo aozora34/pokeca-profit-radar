@@ -108,11 +108,25 @@ async function searchPokemonCards(name) {
       const query = card.name + " " + card.localId;
 
 
-      const priceInfo = priceCards.find(
+      const normalizeCardName = value =>
 
-        priceCard => priceCard.name === card.name
+  String(value || "")
 
-      );
+    .normalize("NFKC")
+
+    .replace(/[\s　]/g, "")
+
+    .toLowerCase();
+
+const priceInfo = priceCards.find(
+
+  priceCard =>
+
+    normalizeCardName(priceCard.name) ===
+
+    normalizeCardName(card.name)
+
+);
 
       const priceText = document.createElement("p");
 
