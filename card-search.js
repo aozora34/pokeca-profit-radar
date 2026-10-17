@@ -32,6 +32,7 @@ async function searchPokemonCards(name) {
 
     const cards = await response.json();
     
+    
 
     let priceCards = [];
 
