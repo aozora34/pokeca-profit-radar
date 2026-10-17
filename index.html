@@ -310,62 +310,6 @@ function calculateCardProfit() {
 
 }
 
-  const buyInput = document.getElementById("buyPrice2000");
-
-  const sellInput = document.getElementById("sellPrice2000");
-
-  const result = document.getElementById("profitResult2000");
-
-  if (!buyInput || !sellInput || !result) {
-
-  alert("入力欄が見つかりません。");
-
-  return;
-
-}
-
-const buyText = buyInput.value.trim();
-
-const sellText = sellInput.value.trim();
-
-if (buyText === "" || sellText === "") {
-
-  result.textContent = "仕入れ価格と売却価格を入力してください";
-
-  return;
-
-}
-
-const buy = Number(buyText);
-
-const sell = Number(sellText);
-
-if (!Number.isFinite(buy) || !Number.isFinite(sell) || buy < 0 || sell < 0) {
-
-  result.textContent = "正しい価格を入力してください";
-
-  return;
-
-}
-    result.textContent = "仕入れ価格と売却価格を入力してください";
-
-    return;
-
-  }
-
-  const fee = Math.floor(sell * 0.10);
-
-  const shipping = 230;
-
-  const profit = sell - buy - fee - shipping;
-
-  result.textContent =
-
-    "予想利益：" + profit.toLocaleString() + "円" +
-
-    (profit >= 2000 ? " 🎯 利益2,000円以上！" : "（利益2,000円未満）");
-
-}
 
 </script>
   
