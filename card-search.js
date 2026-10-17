@@ -126,7 +126,9 @@ const priceInfo = priceCards.find(
 
     normalizeCardName(priceCard.name) ===
 
-    normalizeCardName(card.name)
+    normalizeCardName(card.name) &&
+
+    priceCard.currentSell != null
 
 );
 
