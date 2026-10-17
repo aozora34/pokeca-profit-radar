@@ -48,7 +48,9 @@ async function searchPokemonCards(name) {
       if (priceResponse.ok) {
 
         const priceData = await priceResponse.json();
+console.log("価格データの構造:", Object.keys(priceData));
 
+console.log("価格データの先頭:", priceData.sets?.[0]);
         priceCards = (priceData.sets || []).flatMap(set =>
 
           (set.cards || []).map(priceCard => ({
