@@ -238,10 +238,18 @@ async function loadCardPrices() {
 
     }
 
-    const data = await response.
+    const data = await response.json();
 
 
-</script>
+    results.textContent = "価格データを取得しました";
+
+  } catch (error) {
+
+    results.textContent = error.message;
+
+  }
+
+}</script>
 
 
 <script>
