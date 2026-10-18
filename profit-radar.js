@@ -18,7 +18,7 @@ async function loadProfitRadar() {
 
     if (!response.ok) {
 
-      throw new Error("価格データの取得に失敗しました");
+      throw new Error("HTTP " + response.status + "：価格データを取得できません");
 
     }
 
