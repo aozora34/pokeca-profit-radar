@@ -77,3 +77,64 @@ async function loadProfitRadar() {
   }
 
 }
+function calculateRadarProfit() {
+
+  const sellPrice = Number(prompt("販売価格（円）を入力してください"));
+
+  if (!Number.isFinite(sellPrice) || sellPrice <= 0) {
+
+    alert("販売価格を正しく入力してください");
+
+    return;
+
+  }
+
+  const buyPrice = Number(prompt("仕入れ価格（円）を入力してください"));
+
+  if (!Number.isFinite(buyPrice) || buyPrice < 0) {
+
+    alert("仕入れ価格を正しく入力してください");
+
+    return;
+
+  }
+
+  const feeRate = Number(prompt("販売手数料（％）を入力してください", "10"));
+
+  if (!Number.isFinite(feeRate) || feeRate < 0 || feeRate > 100) {
+
+    alert("手数料を正しく入力してください");
+
+    return;
+
+  }
+
+  const shipping = Number(prompt("送料など（円）を入力してください", "200"));
+
+  if (!Number.isFinite(shipping) || shipping < 0) {
+
+    alert("送料を正しく入力してください");
+
+    return;
+
+  }
+
+  const profit = sellPrice - buyPrice
+
+    - sellPrice * feeRate / 100 - shipping;
+
+  alert(
+
+    "手数料・送料を差し引いた利益：" +
+
+    Math.floor(profit) + "円\n" +
+
+    (profit >= 2000
+
+      ? "利益2,000円以上です！"
+
+      : "利益2,000円未満です。")
+
+  );
+
+}
