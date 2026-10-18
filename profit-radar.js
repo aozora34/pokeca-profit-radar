@@ -299,12 +299,20 @@ async function loadProfitRadar() {
     console.error(error);
 
     result.textContent =
+    } catch (error) {
 
-      "価格データを読み込めませんでした。通信状況と公開データを確認してください。";
+    console.error("価格データの読み込みエラー:", error);
+
+    result.textContent =
+
+      "読み込みエラー：" +
+
+      (error?.message || String(error));
 
   }
 
 }
+  
 function calculateRadarProfit() {
 
   const sellPrice = Number(prompt("販売価格（円）を入力してください"));
