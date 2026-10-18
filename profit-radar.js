@@ -1,3 +1,5 @@
+
+
 async function loadProfitRadar() {
 
   const result = document.getElementById("profitRadarResults");
@@ -10,7 +12,7 @@ async function loadProfitRadar() {
 
     const response = await fetch(
 
-      "https://cardgap.jp/data/prices.json",
+      "https://tokyocardreport.com/data/prices.json",
 
       { cache: "no-store" }
 
@@ -18,79 +20,49 @@ async function loadProfitRadar() {
 
     if (!response.ok) {
 
-      throw new Error("HTTP " + response.status + "：価格データを取得できません");
+      throw new Error("価格データを取得できませんでした");
 
     }
 
     const data = await response.json();
 
-    if (!Array.isArray(data.rows)) {
+    if (!Array.isArray(data.sets)) {
 
       throw new Error("価格データの形式が想定と異なります");
 
     }
 
-    const cards = data.rows
+    const cards = data.sets.flatMap(set =>
 
-      .map(card => {
+      (set.cards || []).map(card => {
 
-        const sell = Number(
+        const history = (card.sell || []).filter(
 
-          card.price_jpy ?? card.cardgap_median_jpy
+          price => typeof price === "number" && price > 0
 
         );
 
-        const fleaPrices = [
+        return {
 
-          card.price_mercari_jpy,
+          name: card.name || "カード名不明",
 
-          card.price_yahoo_jpy
+          no: card.no || "",
 
-        ]
+          sell: history.length ? history[history.length - 1] : null
 
-          .filter(v => v != null && Number(v) > 0)
-
-          .map(Number);
-
-        if (
-
-          !card.name_ja ||
-
-          !Number.isFinite(sell) ||
-
-          sell <= 0 ||
-
-          fleaPrices.length === 0
-
-        ) {
-
-          return null;
-
-        }
-
-        const buy = Math.min(...fleaPrices);
-
-        const fee = sell * 0.10;
-
-        const shipping = 200;
-
-        const profit = sell - fee - shipping - buy;
-
-        return { ...card, sell, buy, profit };
+        };
 
       })
 
-      .filter(card => card && card.profit >= 2000)
+    ).filter(card => card.sell !== null);
 
-      .sort((a, b) => b.profit - a.profit)
-
-      .slice(0, 100);
+    cards.sort((a, b) => b.sell - a.sell);
 
     result.replaceChildren();
 
     const heading = document.createElement("h3");
 
-    heading.textContent = "利益2,000円以上の候補";
+    heading.textContent = "利益2,000円チェック";
 
     result.appendChild(heading);
 
@@ -98,31 +70,11 @@ async function loadProfitRadar() {
 
     note.textContent =
 
-      "公開価格を使った概算です。販売手数料10％・送料等200円で計算。実際の購入価格と販売価格は必ず確認してください。";
+      "参考販売価格から、手数料10％・送料200円を引いて概算します。仕入れ価格を入力してください。";
 
     result.appendChild(note);
 
-    const credit = document.createElement("p");
-
-    credit.textContent = "価格データ：CardGap（CC BY 4.0）";
-
-    result.appendChild(credit);
-
-    if (cards.length === 0) {
-
-      const empty = document.createElement("p");
-
-      empty.textContent =
-
-        "利益2,000円以上の候補は見つかりませんでした。価格データや条件を確認してください。";
-
-      result.appendChild(empty);
-
-      return;
-
-    }
-
-    cards.forEach(card => {
+    cards.slice(0, 100).forEach(card => {
 
       const item = document.createElement("section");
 
@@ -132,91 +84,71 @@ async function loadProfitRadar() {
 
       const title = document.createElement("h4");
 
-      title.textContent = card.name_ja;
+      title.textContent = card.name + (card.no ? "（" + card.no + "）" : "");
 
       item.appendChild(title);
 
-      const prices = document.createElement("p");
+      const price = document.createElement("p");
 
-      prices.textContent =
+      price.textContent =
 
-        "国内基準価格：" + card.sell.toLocaleString("ja-JP") + "円\n" +
+        "参考販売価格：" + card.sell.toLocaleString("ja-JP") + "円";
 
-        "フリマ参考価格：" + card.buy.toLocaleString("ja-JP") + "円";
+      item.appendChild(price);
 
-      prices.style.whiteSpace = "pre-line";
+      const label = document.createElement("label");
 
-      item.appendChild(prices);
+      label.textContent = "実際の仕入れ価格（円）";
 
-      const buyLabel = document.createElement("label");
+      item.appendChild(label);
 
-      buyLabel.textContent = "実際の仕入れ価格（円）";
+      const input = document.createElement("input");
 
-      item.appendChild(buyLabel);
+      input.type = "number";
 
-      const buyInput = document.createElement("input");
+      input.min = "0";
 
-      buyInput.type = "number";
+      input.placeholder = "仕入れ価格を入力";
 
-      buyInput.min = "0";
-
-      buyInput.value = String(card.buy);
-
-      buyInput.style.cssText =
+      input.style.cssText =
 
         "display:block;width:100%;box-sizing:border-box;padding:8px;margin:6px 0;";
 
-      item.appendChild(buyInput);
+      item.appendChild(input);
 
-      const sellLabel = document.createElement("label");
+      const maxBuy = Math.floor(card.sell * 0.9 - 200 - 2000);
 
-      sellLabel.textContent = "実際の販売予定価格（円）";
+      const limit = document.createElement("p");
 
-      item.appendChild(sellLabel);
+      limit.textContent =
 
-      const sellInput = document.createElement("input");
+        "利益2,000円を確保できる仕入れ上限：" +
 
-      sellInput.type = "number";
+        Math.max(0, maxBuy).toLocaleString("ja-JP") + "円";
 
-      sellInput.min = "0";
-
-      sellInput.value = String(card.sell);
-
-      sellInput.style.cssText =
-
-        "display:block;width:100%;box-sizing:border-box;padding:8px;margin:6px 0;";
-
-      item.appendChild(sellInput);
+      item.appendChild(limit);
 
       const profitText = document.createElement("p");
 
+      profitText.textContent = "仕入れ価格を入力してください。";
+
       item.appendChild(profitText);
 
-      const update = () => {
+      input.addEventListener("input", () => {
 
-        const buy = Number(buyInput.value);
+        if (input.value === "" || Number(input.value) < 0) {
 
-        const sell = Number(sellInput.value);
-
-        if (
-
-          buyInput.value === "" ||
-
-          sellInput.value === "" ||
-
-          buy < 0 ||
-
-          sell <= 0
-
-        ) {
-
-          profitText.textContent = "価格を入力してください。";
+          profitText.textContent = "仕入れ価格を入力してください。";
 
           return;
 
         }
 
-        const profit = Math.floor(sell - sell * 0.10 - 200 - buy);
+        const profit = Math.floor(
+
+          card.sell - card.sell * 0.10 - 200 - Number(input.value)
+
+        );
 
         profitText.textContent =
 
@@ -228,13 +160,7 @@ async function loadProfitRadar() {
 
             : "（利益2,000円未満）");
 
-      };
-
-      buyInput.addEventListener("input", update);
-
-      sellInput.addEventListener("input", update);
-
-      update();
+      });
 
       const mercari = document.createElement("a");
 
@@ -242,7 +168,7 @@ async function loadProfitRadar() {
 
         "https://jp.mercari.com/search?keyword=" +
 
-        encodeURIComponent(card.name_ja);
+        encodeURIComponent(card.name);
 
       mercari.target = "_blank";
 
@@ -260,7 +186,7 @@ async function loadProfitRadar() {
 
         "https://auctions.yahoo.co.jp/search/search?p=" +
 
-        encodeURIComponent(card.name_ja);
+        encodeURIComponent(card.name);
 
       yahoo.target = "_blank";
 
@@ -270,26 +196,6 @@ async function loadProfitRadar() {
 
       item.appendChild(yahoo);
 
-      if (card.slug) {
-
-        item.appendChild(document.createElement("br"));
-
-        const source = document.createElement("a");
-
-        source.href = "https://cardgap.jp/cards/" +
-
-          encodeURIComponent(card.slug);
-
-        source.target = "_blank";
-
-        source.rel = "noopener noreferrer";
-
-        source.textContent = "CardGapのカード情報";
-
-        item.appendChild(source);
-
-      }
-
       result.appendChild(item);
 
     });
@@ -297,11 +203,10 @@ async function loadProfitRadar() {
   } catch (error) {
 
     console.error("価格データの読み込みエラー:", error);
-result.textContent =
 
-      "読み込みエラー：" +
+    result.textContent =
 
-      (error?.message || String(error));
+      "読み込みエラー：" + (error?.message || String(error));
 
   }
 
