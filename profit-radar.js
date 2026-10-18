@@ -56,7 +56,13 @@ async function loadProfitRadar() {
 
     ).filter(card => card.sell !== null);
 
-    cards.sort((a, b) => b.sell - a.sell);
+    const candidates = cards
+
+  .filter(card => Math.floor(card.sell * 0.9 - 200 - 2000) > 0)
+
+  .sort((a, b) => b.sell - a.sell)
+
+  .slice(0, 100);
 
     result.replaceChildren();
 
@@ -74,7 +80,7 @@ async function loadProfitRadar() {
 
     result.appendChild(note);
 
-    cards.slice(0, 100).forEach(card => {
+    candidates.forEach(card => {
 
       const item = document.createElement("section");
 
