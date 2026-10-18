@@ -296,14 +296,8 @@ async function loadProfitRadar() {
 
   } catch (error) {
 
-    console.error(error);
-
-    result.textContent =
-    } catch (error) {
-
     console.error("価格データの読み込みエラー:", error);
-
-    result.textContent =
+result.textContent =
 
       "読み込みエラー：" +
 
