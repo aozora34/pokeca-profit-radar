@@ -167,6 +167,7 @@
 profitText.style.color = profit >= 2000 ? "green" : "red";
 
 profitText.style.fontWeight = profit >= 2000 ? "bold" : "normal";
+         item.style.display = profit >= 2000 ? "" : "none";
   });
       const mercari = document.createElement("a");
 
