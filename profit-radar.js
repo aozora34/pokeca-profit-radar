@@ -1,6 +1,4 @@
-
-
-async function loadProfitRadar() {
+   async function loadProfitRadar() {
 
   const result = document.getElementById("profitRadarResults");
 
