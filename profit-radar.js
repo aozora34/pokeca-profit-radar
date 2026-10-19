@@ -158,16 +158,18 @@ async function loadProfitRadar() {
 
         profitText.textContent =
 
-          "概算利益：" + profit.toLocaleString("ja-JP") + "円" +
+  "概算利益：" + profit.toLocaleString("ja-JP") + "円" +
 
-          (profit >= 2000
+  (profit >= 2000
 
-            ? "（利益2,000円以上）"
+    ? " 🎯 利益2,000円以上！"
 
-            : "（利益2,000円未満）");
+    : "（利益2,000円未満）");
 
-      });
+profitText.style.color = profit >= 2000 ? "green" : "red";
 
+profitText.style.fontWeight = profit >= 2000 ? "bold" : "normal";
+  });
       const mercari = document.createElement("a");
 
       mercari.href =
