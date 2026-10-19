@@ -142,11 +142,15 @@
 
         if (input.value === "" || Number(input.value) < 0) {
 
-          profitText.textContent = "仕入れ価格を入力してください。";
+  profitText.textContent = "仕入れ価格を入力してください。";
 
-          return;
+  item.style.display = "";
 
-        }
+  return;
+
+}
+
+        
 
         const profit = Math.floor(
 
